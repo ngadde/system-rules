@@ -27,21 +27,31 @@ import static java.lang.System.getenv;
  *   }
  * }
  * </pre>
+ * <p>You can ensure that an environment variable is no set by calling
+ * {@link #clear(String)}.
  * <p><b>Warning:</b> This rule uses reflection for modifying internals of the
  * environment variables map. It fails if your {@code SecurityManager} forbids
  * such modifications.
  */
 public class EnvironmentVariables implements TestRule {
 	/**
-	 * Set the value of an environment variable. You can delete an environment
-	 * variable by setting it to {@code null}.
+	 * Set the value of an environment variable.
 	 *
 	 * @param name the environment variable's name.
-	 * @param value the environment variable's new value.
+	 * @param value the environment variable's new value. May be {@code null}.
      */
 	public void set(String name, String value) {
 		set(getEditableMapOfVariables(), name, value);
 		set(getTheCaseInsensitiveEnvironment(), name, value);
+	}
+
+	/**
+	 * Delete an environment variable.
+	 *
+	 * @param name the environment variable's name.
+     */
+	public void clear(String name) {
+		set(name, null);
 	}
 
 	private void set(Map<String, String> variables, String name, String value) {
